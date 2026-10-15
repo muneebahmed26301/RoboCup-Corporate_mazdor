@@ -22,7 +22,7 @@ National Center of Robotics and Automation (NCRA), NUST, Pakistan
   <em>Watch the simulation Demo of UR5e Robotic Arm.</em>
 </p>
 
-<p align="center"> <a href="assets/robocup_certificate.png"> <img src="assets/robocup_certificate.png" width="380" alt="RoboCup Autonomous Robot Manipulation Challenge 2026 certificate"> </a> <br> <em>Certificate of achievement, RoboCup Autonomous Robot Manipulation Challenge 2026 (click to enlarge). See <a href="#7-competition-recognition">Competition Recognition</a>.</em> </p>
+<p align="center"> <a href="assists/Robocup 2026 Certificate.png"> <img src="assets/robocup_certificate.png" width="380" alt="RoboCup Autonomous Robot Manipulation Challenge 2026 certificate"> </a> <br> <em>Certificate of achievement, RoboCup Autonomous Robot Manipulation Challenge 2026 (click to enlarge). See <a href="#7-competition-recognition">Competition Recognition</a>.</em> </p>
 
 ---
 
