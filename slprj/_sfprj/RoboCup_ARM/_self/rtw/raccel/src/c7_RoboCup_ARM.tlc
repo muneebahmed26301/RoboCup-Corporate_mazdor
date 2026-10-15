@@ -1,0 +1,136 @@
+%implements "chartSource" "C"
+%function ChartConfig(block, system) void
+  %createrecord chartConfiguration { ...
+          executeAtInitialization  0 ...
+  }
+  %return chartConfiguration
+%endfunction
+%function ChartDataMap(block, system) void
+  %createrecord ChartDataElements {\
+    NumChartData   16 \
+    ChartDataDefaults {\
+      RecordType   "ChartData"\
+      Dimensions   []\
+      IsTestPoint  0\
+    }\
+    ChartData {\
+      Name         "scanX"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "scanX"\
+      SrcLocation  ""\
+      Dimensions   [1,24]\
+    }\
+    ChartData {\
+      Name         "scanY"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "scanY"\
+      SrcLocation  ""\
+      Dimensions   [1,24]\
+    }\
+    ChartData {\
+      Name         "N"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "N"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "scan_idx"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "scan_idx"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "scan_z"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "scan_z"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "tol"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "tol"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "pick_queue"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "pick_queue"\
+      SrcLocation  ""\
+      Dimensions   [20,4]\
+    }\
+    ChartData {\
+      Name         "queue_size"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "queue_size"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "pick_idx"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "pick_idx"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "log_count"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "log_count"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "i"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "i"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "nc"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "nc"\
+      SrcLocation  ""\
+      Dimensions   [1,3]\
+    }\
+    ChartData {\
+      Name         "sfEvent"\
+      Description  "ActiveChartEvent"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "is_active_c7_RoboCup_ARM"\
+      Description  "StateIsActive"\
+      SFName       "is_active_c7_RoboCup_ARM"\
+      Path         "is_active_c7_RoboCup_ARM"\
+      SrcLocation  ""\
+      IsTestPoint  1\
+    }\
+    ChartData {\
+      Name         "is_c7_RoboCup_ARM"\
+      Description  "StateActiveChild"\
+      SFName       "is_c7_RoboCup_ARM"\
+      Path         "is_c7_RoboCup_ARM"\
+      SrcLocation  ""\
+      IsTestPoint  1\
+    }\
+    ChartData {\
+      Name         "temporalCounter_i1"\
+      Description  "TemporalCounter"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  ""\
+    }\
+  }
+  %return ChartDataElements
+%endfunction

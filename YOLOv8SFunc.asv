@@ -1,0 +1,185 @@
+function YOLOv8SFunc(block)
+setup(block);
+end
+
+function setup(block)
+    block.NumInputPorts  = 1;
+    block.NumOutputPorts = 2;  % output 1: image, output 2: bboxes
+
+    % ---- Input: flattened RGB image ----
+    block.InputPort(1).Dimensions        = [720*1280*3  1];
+    block.InputPort(1).DatatypeID        = 3;       % uint8
+    block.InputPort(1).Complexity        = 'Real';
+    block.InputPort(1).DirectFeedthrough = true;
+
+    % ---- Output 1: annotated image (flattened) ----
+    block.OutputPort(1).Dimensions       = [720*1280*3  1];
+    block.OutputPort(1).DatatypeID       = 3;       % uint8
+    block.OutputPort(1).Complexity       = 'Real';
+
+    % ---- Output 2: bounding boxes [100x6] ----
+    % Each row: [x y w h score classID]
+    % Unused rows = zeros
+    % Max 100 detections per frame
+    block.OutputPort(2).Dimensions       = [20  6];
+    block.OutputPort(2).DatatypeID       = 0;       % double
+    block.OutputPort(2).Complexity       = 'Real';
+
+    % 1 dialog parameter: model path
+    block.NumDialogPrms     = 1;
+    block.DialogPrmsTunable = { 'Nontunable'};
+
+    block.SampleTimes = [-1 0];
+
+    block.RegBlockMethod('Start',           @Start);
+    block.RegBlockMethod('Outputs',         @Outputs);
+    block.RegBlockMethod('Terminate',       @Terminate);
+    % block.RegBlockMethod('CheckParameters', @CheckParameters);
+end
+
+% function CheckParameters(block)
+%     % modelPath = block.DialogPrm(1).Data;
+%     % if ~isfile(modelPath)
+%     %     error('YOLOv8SFunc: Model file not found: %s', modelPath);
+%     % end
+% end
+
+function Start(block)
+    % modelPath = block.DialogPrm(1).Data;
+
+    % fprintf('Loading YOLOv8 model from: %s\n', modelPath);
+    fprintf('Yolov8 S-function initializing... \n');
+    block.UserData.net = evalin("base", 'net');
+    block.UserData.ClassNames = evalin("base", 'classNames')
+
+    fprintf('Yolov8 model ready. Classes loaded: %d\n', numel(block.UserData.ClassNames));
+end
+
+function Outputs(block)
+    net = block.UserData.net;
+    classNames = block.UserData.classNames;
+
+    % Reshape flat input to image
+    flatImg = block.InputPort(1).Data(:);
+    rgbImg  = reshape(flatImg, [720 1280 3]);
+    
+    % Read ignore list from dialog param 2
+    ignoreStr  = block.DialogPrm(2).Data;
+    ignoreList = strsplit(ignoreStr, ',');
+    ignoreList = strtrim(ignoreList);
+
+    % Run detection
+    [annotated, bboxOut] = runYOLOv8(net, classNames, rgbImg, ignoreList);
+
+    % Output 1: flattened annotated image
+    block.OutputPort(1).Data = reshape(annotated, [720*1280*3  1]);
+
+    % Output 2: bbox matrix [100x6]
+    block.OutputPort(2).Data = bboxOut;
+end
+
+function Terminate(~)
+    fprintf('YOLOv8 S-Function Terminate.\n');
+end
+
+% ============================================================
+function [annotatedImg, bboxOut] = runYOLOv8(net, classNames, rgbImg, ignoreList)
+    annotatedImg = rgbImg;
+    bboxOut      = zeros(20, 6);  % default: no detections
+
+    inputSize = 640;
+    threshold = 0.3;
+    origH     = size(rgbImg, 1);
+    origW     = size(rgbImg, 2);
+
+    % ---- Letterbox ----
+    scale   = min(inputSize/origH, inputSize/origW);
+    newH    = round(origH * scale);
+    newW    = round(origW * scale);
+    padTop  = floor((inputSize - newH) / 2);
+    padLeft = floor((inputSize - newW) / 2);
+
+    resized = imresize(rgbImg, [newH newW]);
+    canvas  = uint8(128 * ones(inputSize, inputSize, 3));
+    canvas(padTop+1:padTop+newH, padLeft+1:padLeft+newW, :) = resized;
+
+    % ---- Inference ----
+    imgNorm = single(canvas) / 255.0;
+    imgDL   = dlarray(reshape(imgNorm, [inputSize inputSize 3 1]), 'SSCB');
+
+    try
+        output  = predict(net, imgDL);
+        outData = squeeze(extractdata(output));
+    catch ME
+        warning('Inference failed: %s', ME.message);
+        return;
+    end
+
+    if isvector(outData); return; end
+
+    numClasses = length(classNames);
+    if size(outData,1) < 4 + numClasses; return; end
+
+    % ---- Parse ----
+    boxPreds              = outData(1:4, :);
+    classPreds            = outData(5:5+numClasses-1, :);
+    [maxScores, classIdx] = max(classPreds, [], 1);
+    keepIdx               = maxScores >= threshold;
+
+    if ~any(keepIdx); return; end
+
+    fb = boxPreds(:, keepIdx);
+    fs = maxScores(keepIdx);
+    fc = classIdx(keepIdx);
+
+    % Convert cx cy w h -> x y w h in original image coords
+    x1 = (fb(1,:) - fb(3,:)/2 - padLeft) / scale;
+    y1 = (fb(2,:) - fb(4,:)/2 - padTop)  / scale;
+    bw = fb(3,:) / scale;
+    bh = fb(4,:) / scale;
+
+    x1 = max(x1, 1);
+    y1 = max(y1, 1);
+    bw = min(bw, double(origW) - x1);
+    bh = min(bh, double(origH) - y1);
+
+    % ---- NMS ----
+    [bboxes, scores, nmsIdx] = selectStrongestBbox( ...
+        double([x1' y1' bw' bh']), double(fs)', ...
+        'RatioType',        'Union', ...
+        'OverlapThreshold', 0.45);
+
+    if isempty(bboxes); return; end
+
+    % ---- Pack into [100x6] output ----
+    % Format: [x y w h score classID]
+    nDet   = min(size(bboxes, 1), 20);  % cap at 100
+    labels = {};
+    rowIdx = 0;   % output row counter
+
+    for i = 1:nDet
+        classID        = double(fc(nmsIdx(i)));
+        className = classNames{classID};
+
+        % Skip if class is in ignore list
+        if any(strcmpi(className, ignoreList))
+            continue;
+        end
+
+        rowIdx               = rowIdx + 1;
+        bboxOut(rowIdx, :)  = [bboxes(i,:), scores(i), classID];
+        labels{rowIdx} = sprintf('%s %.2f', classNames{classID}, scores(i));
+    end
+    
+    if rowIdx == 0; return; end   % nothing to draw
+    % ---- Annotate image ----
+    try
+        annotatedImg = insertObjectAnnotation( ...
+            rgbImg, 'rectangle', bboxOut(1:rowIdx, 1:4), labels(1:rowIdx), ...
+            'TextBoxOpacity', 0.8, ...
+            'FontSize',       12,  ...
+            'Color',          'yellow');
+    catch
+        annotatedImg = rgbImg;
+    end
+end
