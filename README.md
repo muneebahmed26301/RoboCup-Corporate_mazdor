@@ -8,7 +8,7 @@ National Center of Robotics and Automation (NCRA), NUST, Pakistan
 
 *Team members: Muneeb Ahmad, Saeed Ur Rehman, Kanz Ur Rehman*
 
-![MATLAB](https://img.shields.io/badge/MATLAB-R2023b%2B-orange?logo=mathworks&logoColor=white)
+![MATLAB](https://img.shields.io/badge/MATLAB-R2025b%2B-orange?logo=mathworks&logoColor=white)
 ![Simulink](https://img.shields.io/badge/Simulink-S--Functions-blue)
 ![Robot](https://img.shields.io/badge/Robot-UR5e-lightgrey)
 ![YOLO](https://img.shields.io/badge/Detector-YOLOv8-00FFFF)
