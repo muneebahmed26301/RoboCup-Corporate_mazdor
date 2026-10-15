@@ -337,4 +337,4 @@ Add a short video or GIF of a full pick sequence here:
 **Muneeb Ahmad**
 BS Mechatronics Engineering, NUST
 National Center of Robotics and Automation (NCRA)
-`[your email]` | `[LinkedIn]`
+`[muneeb.nust.mts.2021@gmail.com]` | `[www.linkedin.com/in/engg-muneeb-ahmad]`
