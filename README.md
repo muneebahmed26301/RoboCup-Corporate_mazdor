@@ -4,7 +4,6 @@
 
 **Muneeb Ahmad**
 National Center of Robotics and Automation (NCRA), NUST, Pakistan
-`[muneeb.nust.mts.2021@gmail.com]`
 
 *Team members: Muneeb Ahmad, Saeed Ur Rehman, Kanz Ur Rehman*
 
