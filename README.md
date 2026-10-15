@@ -4,7 +4,7 @@
 
 **Muneeb Ahmad**
 National Center of Robotics and Automation (NCRA), NUST, Pakistan
-`[your email]`
+`[muneeb.nust.mts.2021@gmail.com]`
 
 *Team members: Muneeb Ahmad, Saeed Ur Rehman, Kanz Ur Rehman*
 
@@ -21,6 +21,8 @@ National Center of Robotics and Automation (NCRA), NUST, Pakistan
 <p align="center">
   <em>Watch the simulation Demo of UR5e Robotic Arm.</em>
 </p>
+
+<p align="center"> <a href="assets/robocup_certificate.png"> <img src="assets/robocup_certificate.png" width="380" alt="RoboCup Autonomous Robot Manipulation Challenge 2026 certificate"> </a> <br> <em>Certificate of achievement, RoboCup Autonomous Robot Manipulation Challenge 2026 (click to enlarge). See <a href="#7-competition-recognition">Competition Recognition</a>.</em> </p>
 
 ---
 
