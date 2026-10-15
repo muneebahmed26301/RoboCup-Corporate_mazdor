@@ -24,7 +24,7 @@ National Center of Robotics and Automation (NCRA), NUST, Pakistan
 
 <p align="center"> 
   <a href="assists/Robocup 2026 Certificate.png"> 
-  <img src="assists/Robocup 2026 Certificate.png" width="380" alt="RoboCup Autonomous Robot Manipulation Challenge 2026 certificate"> </a> <br> <em>Certificate of achievement, RoboCup Autonomous Robot Manipulation Challenge 2026 (click to enlarge). See <a href="#7-competition-recognition">Competition Recognition</a>.</em> </p>
+  <img src="assists/Robocup 2026 Certificate.png" width="380" alt="RoboCup Autonomous Robot Manipulation Challenge 2026 certificate"> </a> <br> <em>Certificate of achievement, RoboCup Autonomous Robot Manipulation Challenge 2026 (click to enlarge). See <a href="assists/Robocup 2026 Certificate.png">Competition Recognition</a>.</em> </p>
 
 ---
 
